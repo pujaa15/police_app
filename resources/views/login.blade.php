@@ -7,6 +7,7 @@
   <title>Login</title>
   <link rel="shortcut icon" type="image/png" href="{{ asset('/assets/images/logos/favicon.png')}}" />
   <link rel="stylesheet" href="{{ asset('/assets/css/styles.min.css')}}" />
+   <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
@@ -21,9 +22,10 @@
             <div class="card mb-0">
               <div class="card-body">
                 <a href="./index.html" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                  <img src="{{ asset('/assets/images/logos/logo.svg')}}" alt="">
+                  <img src="{{ asset('/assets/images/logos/logo1.jpg')}}" alt="" width="120">
                 </a>
-                <p class="text-center">Your Social Campaigns</p>
+                <p class="text-center">Police App</p>
+                <p class="text-center">Connecting Citizens with Law Enforcement</p>
                 <form id="loginForm">
                   <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Email</label>

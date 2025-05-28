@@ -8,124 +8,125 @@ use Illuminate\Support\Facades\Auth;
 
 class VehicleController extends Controller
 {
-    public function index()
-    {
-        $vehicles = Vehicle::where('user_id', Auth::id())->get();
+    
+    
+    public function index(Request $request)
+{
+    $vehicles = Vehicle::all(); // sementara tampilkan semua data
 
+    if ($request->wantsJson()) {
         return response()->json([
-            'status'  => 'success',
-            'message' => 'data kendaraan ditemukan',
-            'data'    => $vehicles
-        ], 200);
+            'status' => 'success',
+            'message' => 'Data kendaraan ditemukan',
+            'data' => $vehicles,
+        ]);
+    }
+
+    return view('vehicles.index', compact('vehicles'));
+}
+
+    public function create(Request $request)
+    {
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Endpoint tidak tersedia untuk API'], 404);
+        }
+
+        return view('vehicles.create');
     }
 
     public function store(Request $request)
     {
+        
         $validated = $request->validate([
-            'license_plate' => 'required|string|max:20',
-            'type'          => 'required|string|max:20',
-            'brand'         => 'required|string|max:50',
-            'color'         => 'required|string|max:30',
-            'is_stolen'     => 'required|boolean',
+            'license_plate' => 'required|string|unique:vehicles,license_plate',
+            'type' => 'required|string',
+            'brand' => 'required|string',
+            'color' => 'required|string',
         ], [
-            'license_plate.required' => 'Nomor polisi wajib diisi',
-            'type.required'          => 'Jenis kendaraan wajib diisi',
-            'brand.required'         => 'Merek kendaraan wajib diisi',
-            'color.required'         => 'Warna kendaraan wajib diisi',
-            'is_stolen.required'     => 'Status kehilangan wajib diisi',
-            'is_stolen.boolean'      => 'Status kehilangan harus berupa true atau false',
+            'license_plate.required' => 'Nomor plat kendaraan wajib diisi',
+            'license_plate.unique' => 'Nomor plat kendaraan sudah terdaftar',
+            'type.required' => 'Tipe kendaraan wajib diisi',
+            'brand.required' => 'Merek kendaraan wajib diisi',
+            'color.required' => 'Warna kendaraan wajib diisi',
         ]);
 
         $vehicle = Vehicle::create([
-            'user_id'       => Auth::id(),
+            'user_id' => auth()->id(),
             'license_plate' => $validated['license_plate'],
-            'type'          => $validated['type'],
-            'brand'         => $validated['brand'],
-            'color'         => $validated['color'],
-            'is_stolen'     => $validated['is_stolen'],
+            'type' => $validated['type'],
+            'brand' => $validated['brand'],
+            'color' => $validated['color'],
         ]);
 
-        if (!$vehicle) {
+        if ($request->wantsJson()) {
             return response()->json([
-                'status'  => 'error',
-                'message' => 'Gagal menambahkan kendaraan',
-                'data'    => []
-            ], 400);
+                'status' => 'success',
+                'message' => 'Data kendaraan berhasil ditambahkan',
+                'data' => $vehicle,
+            ], 201);
         }
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Kendaraan berhasil ditambahkan',
-            'data'    => $vehicle
-        ], 200);
+        return redirect()->route('vehicles.index')->with('success', 'Kendaraan berhasil ditambahkan.');
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $vehicle = Vehicle::where('user_id', Auth::id())->find($id);
+        $vehicle = Vehicle::where('user_id', auth()->id())->findOrFail($id);
 
-        if (!$vehicle) {
+        if ($request->wantsJson()) {
             return response()->json([
-                'status'  => 'failed',
-                'message' => 'Kendaraan tidak ditemukan',
-                'data'    => []
-            ], 404);
+                'status' => 'success',
+                'message' => 'Data kendaraan ditemukan',
+                'data' => $vehicle,
+            ]);
         }
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Data kendaraan ditemukan',
-            'data'    => $vehicle
-        ], 200);
+        return redirect()->route('vehicles.index');
     }
 
     public function update(Request $request, $id)
     {
-        $vehicle = Vehicle::where('user_id', Auth::id())->find($id);
-
-        if (!$vehicle) {
-            return response()->json([
-                'status'  => 'failed',
-                'message' => 'Kendaraan tidak ditemukan',
-                'data'    => []
-            ], 404);
-        }
+        $vehicle = Vehicle::where('user_id', auth()->id())->findOrFail($id);
 
         $validated = $request->validate([
-            'license_plate' => 'required|string|max:20',
-            'type'          => 'required|string|max:20',
-            'brand'         => 'required|string|max:50',
-            'color'         => 'required|string|max:30',
-            'is_stolen'     => 'required|boolean',
+            'license_plate' => 'required|string|unique:vehicles,license_plate,' . $vehicle->id,
+            'type' => 'required|string',
+            'brand' => 'required|string',
+            'color' => 'required|string',
+        ], [
+            'license_plate.required' => 'Nomor plat kendaraan wajib diisi',
+            'license_plate.unique' => 'Nomor plat kendaraan sudah terdaftar',
+            'type.required' => 'Tipe kendaraan wajib diisi',
+            'brand.required' => 'Merek kendaraan wajib diisi',
+            'color.required' => 'Warna kendaraan wajib diisi',
         ]);
 
         $vehicle->update($validated);
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Data kendaraan berhasil diperbarui',
-            'data'    => $vehicle
-        ], 200);
-    }
-
-    public function destroy($id)
-    {
-        $vehicle = Vehicle::where('user_id', Auth::id())->find($id);
-
-        if (!$vehicle) {
+        if ($request->wantsJson()) {
             return response()->json([
-                'status'  => 'failed',
-                'message' => 'Kendaraan tidak ditemukan',
-                'data'    => []
-            ], 404);
+                'status' => 'success',
+                'message' => 'Data kendaraan berhasil diubah',
+                'data' => $vehicle,
+            ]);
         }
 
+        return redirect()->route('vehicles.index')->with('success', 'Data kendaraan berhasil diubah.');
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $vehicle = Vehicle::where('user_id', auth()->id())->findOrFail($id);
         $vehicle->delete();
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Data kendaraan berhasil dihapus',
-            'data'    => []
-        ], 200);
+        if ($request->wantsJson()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data kendaraan berhasil dihapus',
+                'data' => [],
+            ]);
+        }
+
+        return redirect()->route('vehicles.index')->with('success', 'Data kendaraan berhasil dihapus.');
     }
 }
