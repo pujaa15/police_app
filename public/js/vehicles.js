@@ -81,7 +81,8 @@ if (window.location.pathname.includes('/panel-control/vehicles')) {
         const type = document.getElementById("createType").value.trim();
         const brand = document.getElementById("createBrand").value.trim();
         const color = document.getElementById("createColor").value.trim();
-        const isStolen = document.querySelector('input[name="createIsStolen"]:checked')?.value === '1';
+        const isStolen = document.querySelector('input[name="createIsStolen"]:checked')?.value;
+
 
         try {
             const response = await axios.post('/api/panel-control/vehicles', {
@@ -146,7 +147,7 @@ if (window.location.pathname.includes('/panel-control/vehicles')) {
                 <td>${item.type}</td>
                 <td>${item.brand}</td>
                 <td>${item.color}</td>
-                <td>${item.is_stolen ? 'Yes' : 'No'}</td>
+                <td>${item.is_stolen == 1 ? 'Yes' : 'No'}</td>
                 <td>
                     <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                         data-bs-target="#editVehicleModal" onclick="showEditVehicleModal(${item.id}, ${index})">Edit</button>

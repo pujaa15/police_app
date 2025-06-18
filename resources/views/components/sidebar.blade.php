@@ -29,6 +29,12 @@
               <span class="hide-menu">Vehicles</span>
             </a>
           </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('officers.index') }}" aria-expanded="false">
+              <i class="ti ti-users"></i>
+              <span class="hide-menu">Officer</span>
+            </a>
+          </li>
 
           </ul>
         </nav>

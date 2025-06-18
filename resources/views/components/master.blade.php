@@ -75,6 +75,7 @@
   <script src="{{ asset('js/utils.js') }}"></script>
   <script src="{{ asset('js/dashboard.js') }}"></script>
   <script src="{{ asset('js/vehicles.js') }}"></script>
+  <script src="{{ asset('js/officers.js') }}"></script>
 
   @yield('scripts')
 </body>
