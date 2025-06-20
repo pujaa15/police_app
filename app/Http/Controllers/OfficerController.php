@@ -41,8 +41,8 @@ class OfficerController extends Controller
             'assigned_area' => 'required|string|max:255',
         ], [
             'name.required' => 'Nama petugas wajib diisi',
-            'badge_number.required' => 'Nomor lencana wajib diisi',
-            'badge_number.unique' => 'Nomor lencana sudah terdaftar',
+            'badge_number.required' => 'Nomor badge wajib diisi',
+            'badge_number.unique' => 'Nomor badge sudah terdaftar',
             'rank.required' => 'Pangkat wajib diisi',
             'assigned_area.required' => 'Area tugas wajib diisi',
         ]);
@@ -86,8 +86,8 @@ class OfficerController extends Controller
             'assigned_area' => 'required|string|max:255',
         ], [
             'name.required' => 'Nama petugas wajib diisi',
-            'badge_number.required' => 'Nomor lencana wajib diisi',
-            'badge_number.unique' => 'Nomor lencana sudah terdaftar',
+            'badge_number.required' => 'Nomor badge wajib diisi',
+            'badge_number.unique' => 'Nomor badge sudah terdaftar',
             'rank.required' => 'Pangkat wajib diisi',
             'assigned_area.required' => 'Area tugas wajib diisi',
         ]);
